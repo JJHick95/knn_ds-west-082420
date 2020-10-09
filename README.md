@@ -18,7 +18,7 @@ If we remember, logistic regression is a supervised, parametric, discriminative 
 KNN is a supervised, non-parametric, discriminative, lazy-learning algorithm.
 
 
-## Let's load in our trusty Titanic dataset
+## Let's load in the Titanic dataset
 
 ![titanic](https://media.giphy.com/media/uhB0n3Eac8ybe/giphy.gif)
 
@@ -216,6 +216,9 @@ lr = LogisticRegression(max_iter=1000)
 %timeit lr.fit(X,y)
 
 ```
+
+    4.13 ms ± 262 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
 
 
 ```python
