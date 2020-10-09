@@ -15,7 +15,7 @@ KNearest Neighbors is our second classification algorithm in our toolbelt added 
 
 If we remember, logistic regression is a supervised, parametric, discriminative model.
 
-KNN is a supervised, non-parametric, discriminative, lazy-learning algorithm.
+KNN is a **supervised, non-parametric, discriminative, lazy-learning algorithm.**
 
 
 
@@ -33,6 +33,10 @@ module_path = os.path.abspath(os.path.join(os.pardir, os.pardir))
 if module_path not in sys.path:
     sys.path.append(module_path)
 ```
+
+    The autoreload extension is already loaded. To reload it, use:
+      %reload_ext autoreload
+
 
 
 ```python
@@ -241,7 +245,7 @@ one_random_student(student_first_names)
 
 ```
 
-    Ozair
+    Jeffrey
 
 
 
@@ -251,7 +255,7 @@ one_random_student(student_first_names)
 
 ```
 
-    Jeffrey
+    Ozair
 
 
 
@@ -261,7 +265,7 @@ one_random_student(student_first_names)
 
 ```
 
-    Josh
+    Elena
 
 
 
@@ -271,7 +275,7 @@ one_random_student(student_first_names)
 
 ```
 
-    Sam
+    Angie
 
 
 
@@ -281,7 +285,7 @@ one_random_student(student_first_names)
 
 ```
 
-    Ozair
+    Prabhakar
 
 
 # 2. KNN Under the Hood: Voting for K
@@ -868,7 +872,7 @@ Based on 5 K, determine what decision a KNN algorithm would make if it used Manh
 ```python
 manh_diffs = []
 for index in df_for_viz.index:
-    manh_diffs.append(manhattan(df_for_viz,index, new_x))
+    manh_diffs.append(manhattan(df_for_viz.loc[index], new_x))
     
 sorted(manh_diffs)
 ```
@@ -876,21 +880,21 @@ sorted(manh_diffs)
 
 
 
-    [(11.366699999999998, 616, 0.0),
-     (12.5333, 595, 1.0),
-     (13.4667, 133, 0.0),
-     (13.725, 621, 1.0),
-     (17.7167, 827, 1.0),
-     (18.2291, 792, 0.0),
-     (19.6583, 786, 0.0),
-     (19.9667, 143, 0.0),
-     (22.6125, 191, 1.0),
-     (23.4333, 166, 0.0),
-     (33.570899999999995, 560, 0.0),
-     (39.0291, 73, 1.0),
-     (43.13329999999999, 150, 1.0),
-     (44.4333, 385, 0.0),
-     (79.00829999999999, 61, 0.0)]
+    [11.366699999999998,
+     12.5333,
+     13.4667,
+     13.725,
+     17.7167,
+     18.2291,
+     19.6583,
+     19.9667,
+     22.6125,
+     23.4333,
+     33.570899999999995,
+     39.0291,
+     43.13329999999999,
+     44.4333,
+     79.00829999999999]
 
 
 
@@ -1198,10 +1202,6 @@ predict_one(X_t_s, X_val_s, y_t, y_val)
     [1]
 
 
-## Should we use a Standard Scaler or Min-Max Scaler?  
-https://sebastianraschka.com/Articles/2014_about_feature_scaling.html   
-http://datareality.blogspot.com/2016/11/scaling-normalizing-standardizing-which.html
-
 # 5. Let's unpack: KNN is a supervised, non-parametric, descriminative, lazy-learning algorithm
 
 ## Supervised
@@ -1301,10 +1301,14 @@ emma = nltk.corpus.gutenberg.words('austen-emma.txt')
 
 
 ```python
-from sklearn.preprocessing import StandardScaler
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import accuracy_score, recall_score, precision_score
- 
+titanic = pd.read_csv('data/cleaned_titanic.csv')
+titanic = titanic.iloc[:,:-2]
+titanic.head()
+
+X = titanic.drop('Survived', axis=1)
+X.head()
+X['youngin'] = X.youngin.astype(int)
+X.head()
 ```
 
 
@@ -1317,6 +1321,9 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42, test_
 
 
 ```python
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import accuracy_score, recall_score, precision_score
+
 kf = KFold(n_splits=5)
 
 k_scores_train = {}
@@ -1324,21 +1331,21 @@ k_scores_val = {}
 
 
 for k in range(1,20):
-    knn = KNeighborsClassifier(n_neighbors=k)
+    knn = KNeighborsClassifier(n_neighbors=k, p=2)
     accuracy_score_t = []
     accuracy_score_v = []
     for train_ind, val_ind in kf.split(X_train, y_train):
         
         X_t, y_t = X_train.iloc[train_ind], y_train.iloc[train_ind] 
         X_v, y_v = X_train.iloc[val_ind], y_train.iloc[val_ind]
-        ss = StandardScaler()
+        mm = MinMaxScaler()
         
         X_t_ind = X_t.index
         X_v_ind = X_v.index
         
-        X_t = pd.DataFrame(ss.fit_transform(X_t))
+        X_t = pd.DataFrame(mm.fit_transform(X_t))
         X_t.index = X_t_ind
-        X_v = pd.DataFrame(ss.transform(X_v))
+        X_v = pd.DataFrame(mm.transform(X_v))
         X_v.index = X_v_ind
         
         knn.fit(X_t, y_t)
@@ -1356,66 +1363,6 @@ for k in range(1,20):
 
 
 ```python
-k_scores_train
-```
-
-
-
-
-    {1: 0.9508280551284403,
-     2: 0.8003075230289609,
-     3: 0.7860422632566407,
-     4: 0.7383712564713848,
-     5: 0.736494378535457,
-     6: 0.7203536514833049,
-     7: 0.7244791152364966,
-     8: 0.7117154988785284,
-     9: 0.7117133828943842,
-     10: 0.7064636262325608,
-     11: 0.7057145678455049,
-     12: 0.7064650368886569,
-     13: 0.7027126916728971,
-     14: 0.7034582234197125,
-     15: 0.7064629209045127,
-     16: 0.6997079941880969,
-     17: 0.6982049401176488,
-     18: 0.695955648972337,
-     19: 0.6974558817305929}
-
-
-
-
-```python
-k_scores_val
-```
-
-
-
-
-    {1: 0.6381775333857032,
-     2: 0.6367747727527775,
-     3: 0.6202446414543823,
-     4: 0.6412636067781393,
-     5: 0.6532487936258556,
-     6: 0.6457636628885647,
-     7: 0.6352597912692178,
-     8: 0.6652676467287622,
-     9: 0.67277522163618,
-     10: 0.6727864437212434,
-     11: 0.6697789249242508,
-     12: 0.6757827404331724,
-     13: 0.67277522163618,
-     14: 0.6787902592301649,
-     15: 0.6773089440017956,
-     16: 0.6787790371451016,
-     17: 0.6607788127034004,
-     18: 0.6727864437212434,
-     19: 0.6637526652452025}
-
-
-
-
-```python
 fig, ax = plt.subplots(figsize=(15,15))
 
 ax.plot(list(k_scores_train.keys()), list(k_scores_train.values()),color='red', linestyle='dashed', marker='o',  
@@ -1427,17 +1374,6 @@ ax.set_ylabel('Accuracy')
 plt.legend()
 ```
 
-
-
-
-    <matplotlib.legend.Legend at 0x1a1b132e48>
-
-
-
-
-![png](index_files/index_108_1.png)
-
-
 ### What value of K performs best on our Test data?
 
 ### How do you think K size relates to our concepts of bias and variance?
@@ -1446,18 +1382,18 @@ plt.legend()
 
 
 ```python
-ss = StandardScaler()
+mm = MinMaxScaler()
 
 X_train_ind = X_train.index
-X_train = pd.DataFrame(ss.fit_transform(X_train))
+X_train = pd.DataFrame(mm.fit_transform(X_train))
 X_train.index = X_train_ind
 
 X_test_ind = X_test.index
-X_test =  pd.DataFrame(ss.transform(X_test))
+X_test =  pd.DataFrame(mm.transform(X_test))
 X_test.index = X_test_ind
 
 
-knn = KNeighborsClassifier(n_neighbors=9)
+knn = KNeighborsClassifier(n_neighbors=15)
 knn.fit(X_train, y_train)
 
 
@@ -1470,42 +1406,12 @@ y_hat = knn.predict(X_test)
 plot_confusion_matrix(confusion_matrix(y_test, y_hat), classes=['Perished', 'Survived'])
 ```
 
-    training accuracy: 0.7192192192192193
-    Test accuracy: 0.695067264573991
-    Confusion Matrix, without normalization
-    [[117  24]
-     [ 44  38]]
-
-
-
-![png](index_files/index_112_1.png)
-
-
 
 ```python
 recall_score(y_test, y_hat)
 ```
 
 
-
-
-    0.4634146341463415
-
-
-
-
 ```python
 precision_score(y_test, y_hat)
-```
-
-
-
-
-    0.6129032258064516
-
-
-
-
-```python
-
 ```
