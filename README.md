@@ -144,8 +144,8 @@ Let's look at our data for viz dataset
 
 Look at how much that changes things.
 
-Look at 166 to 150.  
-Look at the group 621, 143,192
+Look at 166 and 150.  
+Look at 827 to 786
 
 Now let's run our classifier on scaled data and compare to unscaled.
 
