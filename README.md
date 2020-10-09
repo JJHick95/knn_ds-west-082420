@@ -226,7 +226,7 @@ knn = KNeighborsClassifier()
 
 # 6. Tuning K and the BV Tradeoff
 
-### What value of K performs best on our Test data?
+### What value of K performs best on our val data?
 
 ### How do you think K size relates to our concepts of bias and variance?
 
