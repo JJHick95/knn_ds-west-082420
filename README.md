@@ -15,7 +15,7 @@ KNearest Neighbors is our second classification algorithm in our toolbelt added 
 
 If we remember, logistic regression is a supervised, parametric, discriminative model.
 
-KNN is a supervised, non-parametric, discriminative, lazy-learning algorithm.
+KNN is a **supervised, non-parametric, discriminative, lazy-learning algorithm.**
 
 
 ## Let's load in the Titanic dataset
@@ -112,23 +112,21 @@ Based on 5 K, determine what decision a KNN algorithm would make if it used Manh
 
 
 ```python
-
-def manhattan(train_X, index, val_X):
+def manhattan(train_x, val_x):
+    
     """
     :param train_X: one record from the training set
-                    (type series or dataframe including target (survived))
+
     :param val_X: one record from the validation set
-                    series or dataframe include target (survived)
+                
     :return: the Manhattan distance between train_X and val_X
     """
-    train_X = train_X.loc[index]
-    diff = train_X - val_X
-    # Remove survived column
-    diff = diff.iloc[:, :-1]
-    dist = np.abs(diff).sum(axis=1)
     
-    return (dist.values[0],index, train_X.Survived)
-
+    
+    manhattan_dist = np.abs(train_x['Age'] - val_x['Age'])\
+                     + np.abs(train_x['Fare'] - val_x["Fare"])
+        
+    return manhattan_dist.values[0]
 
 ```
 
@@ -150,10 +148,6 @@ Look at 166 to 150.
 Look at the group 621, 143,192
 
 Now let's run our classifier on scaled data and compare to unscaled.
-
-## Should we use a Standard Scaler or Min-Max Scaler?  
-https://sebastianraschka.com/Articles/2014_about_feature_scaling.html   
-http://datareality.blogspot.com/2016/11/scaling-normalizing-standardizing-which.html
 
 # 5. Let's unpack: KNN is a supervised, non-parametric, descriminative, lazy-learning algorithm
 
@@ -216,9 +210,6 @@ lr = LogisticRegression(max_iter=1000)
 %timeit lr.fit(X,y)
 
 ```
-
-    4.13 ms ± 262 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
-
 
 
 ```python
