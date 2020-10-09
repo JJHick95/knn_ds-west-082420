@@ -20,16 +20,12 @@ KNN is a supervised, non-parametric, discriminative, lazy-learning algorithm.
 
 
 ```python
-mccalister = ['Adam', 'Amanda','Chum', 'Dann',
- 'Jacob', 'Jason', 'Johnhoy', 'Karim',
-'Leana','Luluva', 'Matt', 'Maximilian', ]
-```
-
-
-```python
 # This is always a good idea
 %load_ext autoreload
 %autoreload 2
+
+from src.student_caller import one_random_student
+from src.student_list import student_first_names
 
 import os
 import sys
@@ -43,13 +39,13 @@ if module_path not in sys.path:
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from src.student_caller import one_random_student
+import seaborn as sns
 
 import warnings
 warnings.filterwarnings('ignore')
 ```
 
-## Let's load in our trusty Titanic dataset
+## Let's load in the Titanic dataset
 
 ![titanic](https://media.giphy.com/media/uhB0n3Eac8ybe/giphy.gif)
 
@@ -60,6 +56,105 @@ titanic = titanic.iloc[:,:-2]
 titanic.head()
 ```
 
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Fare</th>
+      <th>youngin</th>
+      <th>male</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>7.2500</td>
+      <td>False</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>71.2833</td>
+      <td>False</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7.9250</td>
+      <td>False</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>35.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>53.1000</td>
+      <td>False</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>3</td>
+      <td>35.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8.0500</td>
+      <td>False</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
 #### For visualization purposes, we will use only two features for our first model
 
 
@@ -68,6 +163,15 @@ X = titanic[['Age', 'Fare']]
 y = titanic['Survived']
 y.value_counts()
 ```
+
+
+
+
+    0    549
+    1    340
+    Name: Survived, dtype: int64
+
+
 
 Titanic is a binary classification problem, with our target being the Survived feature
 
@@ -106,8 +210,26 @@ print(f"Val accuracy: {knn.score(X_val, y_val)}")
 
 y_hat = knn.predict(X_val)
 
+
+```
+
+    training accuracy: 0.7274549098196392
+    Val accuracy: 0.6227544910179641
+
+
+
+```python
 plot_confusion_matrix(confusion_matrix(y_val, y_hat), classes=['Perished', 'Survived'])
 ```
+
+    Confusion Matrix, without normalization
+    [[79 22]
+     [41 25]]
+
+
+
+![png](index_files/index_14_1.png)
+
 
 # Quick review of confusion matrix and our metrics: 
   
@@ -115,34 +237,52 @@ plot_confusion_matrix(confusion_matrix(y_val, y_hat), classes=['Perished', 'Surv
 
 ```python
 question = 'How many true positives?'
-one_random_student(mccalister, question)
+one_random_student(student_first_names)
 
 ```
+
+    Ozair
+
 
 
 ```python
 question = 'How many true negatives?'
-one_random_student(mccalister, question)
+one_random_student(student_first_names)
 
 ```
+
+    Jeffrey
+
 
 
 ```python
 question = 'How many false positives?'
-one_random_student(mccalister, question)
+one_random_student(student_first_names)
+
 ```
+
+    Josh
+
 
 
 ```python
 question = 'How many  how many false negatives?'
-one_random_student(mccalister, question)
+one_random_student(student_first_names)
+
 ```
+
+    Sam
+
 
 
 ```python
 question = 'Which will be higher: precision or recall'
-one_random_student(mccalister, question)
+one_random_student(student_first_names)
+
 ```
+
+    Ozair
+
 
 # 2. KNN Under the Hood: Voting for K
 
@@ -173,6 +313,17 @@ plt.legend()
 plt.title('Subsample of Training Data')
 ```
 
+
+
+
+    Text(0.5, 1.0, 'Subsample of Training Data')
+
+
+
+
+![png](index_files/index_24_1.png)
+
+
 The KNN algorithm works by simply storing the training set in memory, then measuring the distance from the training points to a a new point.
 
 Let's drop a point from our validation set into the plot above.
@@ -201,9 +352,57 @@ ax.set_ylim(0,100)
 ```
 
 
+
+
+    (0, 100)
+
+
+
+
+![png](index_files/index_26_1.png)
+
+
+
 ```python
 new_x.head()
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Fare</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>484</th>
+      <td>24.0</td>
+      <td>25.4667</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 Then, KNN finds the K nearest points. K corresponds to the n_neighbors parameter defined when we instantiate the classifier object.
 
@@ -224,6 +423,13 @@ knn.fit(X_for_viz, y_for_viz)
 knn.predict(new_x)
 ```
 
+
+
+
+    array([1])
+
+
+
 When we raise the value of K, KNN acts democratically.  It finds the K closest points, and takes a vote based on the labels.
 
 Let's raise K to 3.
@@ -241,6 +447,13 @@ knn = KNeighborsClassifier(n_neighbors=3)
 knn.fit(X_for_viz, y_for_viz)
 knn.predict(new_x)
 ```
+
+
+
+
+    array([1])
+
+
 
 It is a bit harder to tell what which points are closest by eye.
 
@@ -280,6 +493,14 @@ for index in X_for_viz.index:
 
 ```
 
+          Age     Fare
+    484  24.0  25.4667
+
+
+
+![png](index_files/index_39_1.png)
+
+
 We can the sklearn NearestNeighors object to see the exact calculations.
 
 
@@ -295,14 +516,109 @@ nearest
 ```
 
 
+
+
+    (array([[ 9.04160433,  9.5778426 , 10.51549452]]), array([[11,  5,  0]]))
+
+
+
+
 ```python
 df_for_viz.iloc[nearest[1][0]]
 ```
 
 
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Fare</th>
+      <th>Survived</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>595</th>
+      <td>29.0</td>
+      <td>33.0000</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>616</th>
+      <td>26.0</td>
+      <td>16.1000</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>621</th>
+      <td>20.0</td>
+      <td>15.7417</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
 ```python
 new_x
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Fare</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>484</th>
+      <td>24.0</td>
+      <td>25.4667</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 # Chat poll: What will our 5 neighbor KNN classifier predict our new point to be?
 
@@ -312,6 +628,13 @@ knn = KNeighborsClassifier(n_neighbors=5)
 knn.fit(X_for_viz, y_for_viz)
 knn.predict(new_x)
 ```
+
+
+
+
+    array([0])
+
+
 
 Let's iterate through K, 1 through 10, and see the predictions.
 
@@ -324,12 +647,31 @@ for k in range(1,10):
 
 ```
 
+    [1]
+    [0]
+    [1]
+    [0]
+    [0]
+    [0]
+    [0]
+    [0]
+    [0]
+
+
 What K was correct?
 
 
 ```python
 new_y
 ```
+
+
+
+
+    484    0
+    Name: Survived, dtype: int64
+
+
 
 # 3. Different types of distance
 
@@ -339,6 +681,13 @@ How did the algo calculate those distances?
 ```python
 nearest
 ```
+
+
+
+
+    (array([[ 9.04160433,  9.5778426 , 10.51549452]]), array([[11,  5,  0]]))
+
+
 
 ### Euclidean Distance
 
@@ -364,15 +713,69 @@ nearest
 ```
 
 
+
+
+    (array([[ 9.04160433,  9.5778426 , 10.51549452]]), array([[11,  5,  0]]))
+
+
+
+
 ```python
 df_for_viz.iloc[11]
 
 ```
 
 
+
+
+    Age         29.0
+    Fare        33.0
+    Survived     1.0
+    Name: 595, dtype: float64
+
+
+
+
 ```python
 new_x
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Fare</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>484</th>
+      <td>24.0</td>
+      <td>25.4667</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
@@ -402,14 +805,38 @@ euclid(df_for_viz.iloc[11], new_x)
 ```
 
 
+
+
+    484    9.041604
+    dtype: float64
+
+
+
+
 ```python
 euclid(df_for_viz.iloc[5], new_x)
 ```
 
 
+
+
+    484    9.577843
+    dtype: float64
+
+
+
+
 ```python
 euclid(df_for_viz.iloc[0], new_x)
 ```
+
+
+
+
+    484    10.515495
+    dtype: float64
+
+
 
 # Manhattan distance
 
@@ -470,6 +897,27 @@ sorted(manh_diffs)
 ```
 
 
+
+
+    [(11.366699999999998, 616, 0.0),
+     (12.5333, 595, 1.0),
+     (13.4667, 133, 0.0),
+     (13.725, 621, 1.0),
+     (17.7167, 827, 1.0),
+     (18.2291, 792, 0.0),
+     (19.6583, 786, 0.0),
+     (19.9667, 143, 0.0),
+     (22.6125, 191, 1.0),
+     (23.4333, 166, 0.0),
+     (33.570899999999995, 560, 0.0),
+     (39.0291, 73, 1.0),
+     (43.13329999999999, 150, 1.0),
+     (44.4333, 385, 0.0),
+     (79.00829999999999, 61, 0.0)]
+
+
+
+
 ```python
 from sklearn.neighbors import NearestNeighbors
 
@@ -481,15 +929,125 @@ nearest
 ```
 
 
+
+
+    (array([[11.3667, 12.5333, 13.4667, 13.725 , 17.7167, 18.2291, 19.6583,
+             19.9667, 22.6125, 23.4333]]),
+     array([[ 5, 11,  9,  0, 10,  4,  3,  6, 12, 14]]))
+
+
+
+
 ```python
 df_for_viz.iloc[nearest[1][0]]
 ```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Age</th>
+      <th>Fare</th>
+      <th>Survived</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>616</th>
+      <td>26.0</td>
+      <td>16.1000</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>595</th>
+      <td>29.0</td>
+      <td>33.0000</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>133</th>
+      <td>25.0</td>
+      <td>13.0000</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>621</th>
+      <td>20.0</td>
+      <td>15.7417</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>827</th>
+      <td>24.0</td>
+      <td>7.7500</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>792</th>
+      <td>37.0</td>
+      <td>30.6958</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>786</th>
+      <td>8.0</td>
+      <td>29.1250</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>143</th>
+      <td>18.0</td>
+      <td>11.5000</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>191</th>
+      <td>19.0</td>
+      <td>7.8542</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>166</th>
+      <td>45.0</td>
+      <td>27.9000</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
 
 
 ```python
 from src.plot_train import plot_train
 plot_train(X_t, y_t, X_val, y_val)
 ```
+
+          Age     Fare
+    484  24.0  25.4667
+
+
+
+![png](index_files/index_69_1.png)
+
 
 If we change the distance metric, our prediction should change for K = 5.
 
@@ -503,6 +1061,13 @@ knn_euc.predict(new_x)
 ```
 
 
+
+
+    array([0])
+
+
+
+
 ```python
 knn_man = KNeighborsClassifier(5, p=1)
 knn_man.fit(X_for_viz, y_for_viz)
@@ -510,10 +1075,25 @@ knn_man.predict(new_x)
 ```
 
 
+
+
+    array([1])
+
+
+
+
 ```python
 # Which got it right? 
 new_y
 ```
+
+
+
+
+    484    0
+    Name: Survived, dtype: int64
+
+
 
 # 4. Importance of Scaling
 
@@ -556,11 +1136,29 @@ y_hat = knn.predict(X_val_s)
 
 ```
 
+    training accuracy: 0.717434869739479
+    Val accuracy: 0.6467065868263473
+
+
 
 ```python
 plot_train(X_t, y_t, X_val, y_val)
 plot_train(X_t_s, y_t, X_val_s, y_val, -2,2, text_pos=.1 )
 ```
+
+          Age     Fare
+    484  24.0  25.4667
+            Age      Fare
+    484 -0.4055 -0.154222
+
+
+
+![png](index_files/index_80_1.png)
+
+
+
+![png](index_files/index_80_2.png)
+
 
 Look at how much that changes things.
 
@@ -583,21 +1181,45 @@ X_t, X_val, y_t, y_val = train_test_split(X_train,y_train, random_state=42, test
 predict_one(X_t, X_val, y_t, y_val)
 ```
 
+    [1]
+    [0]
+    [1]
+    [0]
+    [0]
+    [0]
+    [0]
+    [0]
+    [0]
+    [0]
+
+
 
 ```python
-mm = MinMaxScaler()
+ss = StandardScaler()
 
-X_t_s = pd.DataFrame(mm.fit_transform(X_t))
+X_t_s = pd.DataFrame(ss.fit_transform(X_t))
 X_t_s.index = X_t.index
 X_t_s.columns = X_t.columns
 
-X_val_s = pd.DataFrame(mm.transform(X_val))
+X_val_s = pd.DataFrame(ss.transform(X_val))
 X_val_s.index = X_val.index
 X_val_s.columns = X_val.columns
 
 
 predict_one(X_t_s, X_val_s, y_t, y_val)
 ```
+
+    [0]
+    [0]
+    [0]
+    [0]
+    [1]
+    [1]
+    [1]
+    [1]
+    [1]
+    [1]
+
 
 ## Should we use a Standard Scaler or Min-Max Scaler?  
 https://sebastianraschka.com/Articles/2014_about_feature_scaling.html   
@@ -707,6 +1329,9 @@ lr = LogisticRegression(max_iter=1000)
 
 ```
 
+    4.13 ms ± 262 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+
 
 ```python
 #__SOLUTION__
@@ -756,14 +1381,14 @@ for k in range(1,20):
         
         X_t, y_t = X_train.iloc[train_ind], y_train.iloc[train_ind] 
         X_v, y_v = X_train.iloc[val_ind], y_train.iloc[val_ind]
-        mm = MinMaxScaler()
+        ss = StandardScaler()
         
         X_t_ind = X_t.index
         X_v_ind = X_v.index
         
-        X_t = pd.DataFrame(mm.fit_transform(X_t))
+        X_t = pd.DataFrame(ss.fit_transform(X_t))
         X_t.index = X_t_ind
-        X_v = pd.DataFrame(mm.transform(X_v))
+        X_v = pd.DataFrame(ss.transform(X_v))
         X_v.index = X_v_ind
         
         knn.fit(X_t, y_t)
@@ -785,9 +1410,59 @@ k_scores_train
 ```
 
 
+
+
+    {1: 0.9508280551284403,
+     2: 0.8003075230289609,
+     3: 0.7860422632566407,
+     4: 0.7383712564713848,
+     5: 0.736494378535457,
+     6: 0.7203536514833049,
+     7: 0.7244791152364966,
+     8: 0.7117154988785284,
+     9: 0.7117133828943842,
+     10: 0.7064636262325608,
+     11: 0.7057145678455049,
+     12: 0.7064650368886569,
+     13: 0.7027126916728971,
+     14: 0.7034582234197125,
+     15: 0.7064629209045127,
+     16: 0.6997079941880969,
+     17: 0.6982049401176488,
+     18: 0.695955648972337,
+     19: 0.6974558817305929}
+
+
+
+
 ```python
 k_scores_val
 ```
+
+
+
+
+    {1: 0.6381775333857032,
+     2: 0.6367747727527775,
+     3: 0.6202446414543823,
+     4: 0.6412636067781393,
+     5: 0.6532487936258556,
+     6: 0.6457636628885647,
+     7: 0.6352597912692178,
+     8: 0.6652676467287622,
+     9: 0.67277522163618,
+     10: 0.6727864437212434,
+     11: 0.6697789249242508,
+     12: 0.6757827404331724,
+     13: 0.67277522163618,
+     14: 0.6787902592301649,
+     15: 0.6773089440017956,
+     16: 0.6787790371451016,
+     17: 0.6607788127034004,
+     18: 0.6727864437212434,
+     19: 0.6637526652452025}
+
+
 
 
 ```python
@@ -802,6 +1477,17 @@ ax.set_ylabel('Accuracy')
 plt.legend()
 ```
 
+
+
+
+    <matplotlib.legend.Legend at 0x1a1b132e48>
+
+
+
+
+![png](index_files/index_112_1.png)
+
+
 ### What value of K performs best on our Test data?
 
 ### How do you think K size relates to our concepts of bias and variance?
@@ -810,14 +1496,14 @@ plt.legend()
 
 
 ```python
-mm = MinMaxScaler()
+ss = StandardScaler()
 
 X_train_ind = X_train.index
-X_train = pd.DataFrame(mm.fit_transform(X_train))
+X_train = pd.DataFrame(ss.fit_transform(X_train))
 X_train.index = X_train_ind
 
 X_test_ind = X_test.index
-X_test =  pd.DataFrame(mm.transform(X_test))
+X_test =  pd.DataFrame(ss.transform(X_test))
 X_test.index = X_test_ind
 
 
@@ -834,15 +1520,40 @@ y_hat = knn.predict(X_test)
 plot_confusion_matrix(confusion_matrix(y_test, y_hat), classes=['Perished', 'Survived'])
 ```
 
+    training accuracy: 0.7192192192192193
+    Test accuracy: 0.695067264573991
+    Confusion Matrix, without normalization
+    [[117  24]
+     [ 44  38]]
+
+
+
+![png](index_files/index_116_1.png)
+
+
 
 ```python
 recall_score(y_test, y_hat)
 ```
 
 
+
+
+    0.4634146341463415
+
+
+
+
 ```python
 precision_score(y_test, y_hat)
 ```
+
+
+
+
+    0.6129032258064516
+
+
 
 
 ```python
