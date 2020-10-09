@@ -56,6 +56,105 @@ titanic = titanic.iloc[:,:-2]
 titanic.head()
 ```
 
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PassengerId</th>
+      <th>Survived</th>
+      <th>Pclass</th>
+      <th>Age</th>
+      <th>SibSp</th>
+      <th>Parch</th>
+      <th>Fare</th>
+      <th>youngin</th>
+      <th>male</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>0</td>
+      <td>3</td>
+      <td>22.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>7.2500</td>
+      <td>False</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>38.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>71.2833</td>
+      <td>False</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>26.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>7.9250</td>
+      <td>False</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>1</td>
+      <td>1</td>
+      <td>35.0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>53.1000</td>
+      <td>False</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>3</td>
+      <td>35.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>8.0500</td>
+      <td>False</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
 #### For visualization purposes, we will use only two features for our first model
 
 
@@ -64,6 +163,15 @@ X = titanic[['Age', 'Fare']]
 y = titanic['Survived']
 y.value_counts()
 ```
+
+
+
+
+    0    549
+    1    340
+    Name: Survived, dtype: int64
+
+
 
 Titanic is a binary classification problem, with our target being the Survived feature
 
@@ -105,10 +213,23 @@ y_hat = knn.predict(X_val)
 
 ```
 
+    training accuracy: 0.717434869739479
+    Val accuracy: 0.6467065868263473
+
+
 
 ```python
 plot_confusion_matrix(confusion_matrix(y_val, y_hat), classes=['Perished', 'Survived'])
 ```
+
+    Confusion Matrix, without normalization
+    [[79 22]
+     [37 29]]
+
+
+
+![png](index_files/index_14_1.png)
+
 
 # Quick review of confusion matrix and our metrics: 
   
@@ -119,6 +240,9 @@ question = 'How many true positives?'
 one_random_student(student_first_names)
 
 ```
+
+    Reuben
+
 
 
 ```python
@@ -708,7 +832,7 @@ k_scores_train = {}
 k_scores_val = {}
 
 
-for k in range(1,20):
+for k in range(1,50):
     knn = KNeighborsClassifier(n_neighbors=k, p=2)
     accuracy_score_t = []
     accuracy_score_v = []
@@ -752,7 +876,7 @@ ax.set_ylabel('Accuracy')
 plt.legend()
 ```
 
-### What value of K performs best on our Test data?
+### What value of K performs best on our val data?
 
 ### How do you think K size relates to our concepts of bias and variance?
 
